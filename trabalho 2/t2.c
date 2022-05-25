@@ -17,7 +17,6 @@ Implementações feitas:
 
 TODO:
 
- * Validador de CPF
  * Escrever numeros por extenso
  * Checar se é possivel dar o valor (com as notas disponiveis)
 
@@ -30,7 +29,7 @@ int main(){
     //saque
     int saque, saque_holder;
     long long int cpf;
-    int c1, d1, u1, c2, d2, u2, c3, d3, u3, dig_1, dig_2, soma_mod, v_dig1, v_dig2, v_cpf;
+    int c1, d1, u1, c2, d2, u2, c3, d3, u3, dig_1, dig_2, soma_mod, v_dig1, v_dig2;
     
     //numero extenso
     char e1, e2, e3, e4, e5, e6;
@@ -79,7 +78,7 @@ int main(){
                 printf(" -> Informe seu CPF: ");
                 scanf("%lld", &cpf);
 
-                //TODO: validador de cpf
+                //Validador de cpf
                 c1 = (cpf/10000000000) % 10;
                 d1 = (cpf/1000000000) % 10;
                 u1 = (cpf/100000000) % 10;
@@ -108,11 +107,9 @@ int main(){
 
                 //VALIDACAO
                 if((v_dig1!=dig_1)||(v_dig2!=dig_2)){
-                    v_cpf = 1;
                     printf("\nCPF invalido!\n\n");
                     break;
                 }
-
                 
                 if(saque > saldo) {  //impossivel sacar mais dinheiro do que a maquina tem
                     printf("[ERRO!] A maquina nao possui saldo suficiente!\n");
@@ -127,8 +124,6 @@ int main(){
                 saque5 = 0;
                 saque2 = 0;
                 saque1 = 0;
-
-
 
                 while (saque_holder > 0) { // saque_holder != 0 testar dps
                     if (saque_holder - 450 >= 0 && cedulas450 > 0) {
@@ -291,8 +286,6 @@ int main(){
                     if(e5 != 0) { //quinto dígito 0 0 0 0 [0] 0
                         if (e4 != 0)
                            strcat(valExtenso, "e ");
-  
-
 
                         if(e5 == 1 && e6 == 0) //onze, doze, etc
                             strcat(valExtenso, "dez");
@@ -354,8 +347,6 @@ int main(){
                         else if(e6 == 9) 
                             strcat(valExtenso, "nove");  
                     }
-
-
 
                     printf("%s\n\n", valExtenso);
                     printf("[SAIDA] Saque %d:\n%d notas de 450\n%d notas de 250\n%d notas de 50\n%d notas de 20\n%d notas de 10\n%d notas de 5\n%d notas de 2\n%d notas de 1\n", saque, saque450, saque250, saque50, saque20, saque10, saque5, saque2, saque1);
