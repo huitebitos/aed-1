@@ -9,7 +9,7 @@ int main(){
     
     //saque
     int saque, saque_holder;
-    long long int cpf;
+    char cpf[14];
     int c1, d1, u1, c2, d2, u2, c3, d3, u3, dig_1, dig_2, soma_mod, v_dig1, v_dig2, v_cpf;
     int escolhaSaque;
     
@@ -65,20 +65,50 @@ int main(){
                     system("cls");
                     printf("----------Saque----------\n");
                     printf(" -> Informe seu CPF: ");
-                    scanf("%lld", &cpf);
+                    scanf("%s", &cpf);
                     //Validador de cpf
-                    v_cpf = 0; //cpf começa inválido
-                    c1 = (cpf/10000000000) % 10;
-                    d1 = (cpf/1000000000) % 10;
-                    u1 = (cpf/100000000) % 10;
-                    c2 = (cpf/10000000) % 10;
-                    d2 = (cpf/1000000) % 10;
-                    u2 = (cpf/100000) % 10;
-                    c3 = (cpf/10000) % 10;
-                    d3 = (cpf/1000) % 10;
-                    u3 = (cpf/100) % 10;
-                    dig_1 = (cpf/10) % 10;
-                    dig_2 = cpf % 10;
+                    v_cpf = 0; //variavel de loop, a unica forma de sair é pelo break
+
+                    //resetar os digitos a cada repetição
+                    c1 = 0;
+                    d1 = 0;
+                    u1 = 0;
+                    c2 = 0;
+                    d2 = 0;
+                    u2 = 0;
+                    c3 = 0;
+                    d3 = 0;
+                    u3 = 0;
+                    dig_1 = 0;
+                    dig_2 = 0;
+
+                    //ele só checa se o cpf for XXXXXXXXXXX ou XXX.XXX.XXX-XX
+                    if (strlen(cpf) == 14) { //ponto e traço (XXX.XXX.XXX-XX)
+                        c1 = cpf[0] - '0';
+                        d1 = cpf[1] - '0';
+                        u1 = cpf[2] - '0';
+                        c2 = cpf[4] - '0';
+                        d2 = cpf[5] - '0'; //converter char para int 
+                        u2 = cpf[6] - '0';
+                        c3 = cpf[8] - '0';
+                        d3 = cpf[9] - '0';
+                        u3 = cpf[10] - '0';
+                        dig_1 = cpf[12] - '0';
+                        dig_2 = cpf[13] - '0';
+                    }
+                    else if (strlen(cpf) == 11) { //sem ponto e traço (XXXXXXXXXXX)
+                        c1 = cpf[0] - '0';
+                        d1 = cpf[1] - '0';
+                        u1 = cpf[2] - '0';
+                        c2 = cpf[3] - '0';
+                        d2 = cpf[4] - '0';
+                        u2 = cpf[5] - '0';
+                        c3 = cpf[6] - '0';
+                        d3 = cpf[7] - '0';
+                        u3 = cpf[8] - '0';
+                        dig_1 = cpf[9] - '0';
+                        dig_2 = cpf[10] - '0';
+                    }
 
                     //1. DIGITO
                     soma_mod = c1*10 + d1*9 + u1*8 + c2*7 + d2*6 + u2*5 + c3*4 + d3*3 + u3*2;
@@ -95,21 +125,21 @@ int main(){
                         v_dig2 = 0;
 
                     //VALIDACAO
-                    if((v_dig1==dig_1 && v_dig2 == dig_2) && 
-                    !(cpf == 0 || 
-                    cpf == 11111111111 ||
-                    cpf == 22222222222 ||
-                    cpf == 33333333333 ||
-                    cpf == 44444444444 ||
-                    cpf == 55555555555 ||
-                    cpf == 66666666666 ||
-                    cpf == 77777777777 ||
-                    cpf == 88888888888 ||
-                    cpf == 99999999999
-                    )) //cpf é válido
-                        break;
+                    if((v_dig1==dig_1 && v_dig2 == dig_2) &&
+                        !(c1 == d1 && 
+                        d1 == u1 && 
+                        u1 == c2 && 
+                        c2 == d2 &&
+                        d2 == u2 &&  // testar se todos os números são iguais (00000000000, 11111111111)
+                        u2 == c3 &&  // o metodo funciona com traço e ponto também, visto que são usados os DIGITOS
+                        c3 == d3 && 
+                        d3 == u3 &&
+                        u3 == dig_1 &&
+                        dig_1 == dig_2))
+                        break; //cpf é válido
+                    
                     system("cls");
-                    printf("\n [ERRO!] CPF invalido!\n\n");
+                    printf("\n [ERRO!] O CPF %s nao e valido!\n\n", cpf);
                     printf(" 1. Tentar novamente\n");
                     printf(" 2. Voltar ao menu\n\n");
                     do { //se não for válido, executa essa linha
@@ -119,10 +149,10 @@ int main(){
                             break;
                         else if (escolhaSaque == 2)
                             break;
-                        else printf("Escolha uma opcao valida!\n\n");
+                        printf("Escolha uma opcao valida!\n\n"); //um else aqui não é necessário já que a linha só é executada se não der break (não for nenhum dos 2 casos acima)
                     } while (escolhaSaque != 1 && escolhaSaque != 2);
 
-                    if (escolhaSaque == 2) break;
+                    if (escolhaSaque == 2) break; 
                 } while (v_cpf == 0);
 
                 if (escolhaSaque == 2) break; //errou o cpf e decidiu voltar
@@ -152,7 +182,7 @@ int main(){
                             break;
                         else if (escolhaSaque == 2)
                             break;
-                        else printf("Escolha uma opcao valida!\n\n");
+                        printf("Escolha uma opcao valida!\n\n");
                     } while (escolhaSaque != 1 && escolhaSaque != 2);
 
                     if (escolhaSaque == 2) break;
@@ -160,6 +190,7 @@ int main(){
                 } while (saque <= 0 || saque > saldo);
 
                 if (escolhaSaque == 2) break; //errou e decidiu voltar
+
                 saque_holder = saque;
                 saque450 = 0;
                 saque250 = 0;
