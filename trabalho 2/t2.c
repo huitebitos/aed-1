@@ -1046,6 +1046,7 @@ int main(){
                                             break;
                                         }
                                         cedulas450 += qntCedulas;
+                                        printf("\nCedulas adicionadas!\n");
                                     break;
                                     case 250:
                                         printf(" -> Quantidade de cedulas de %d: ", escolhaCedulas);
@@ -1059,6 +1060,7 @@ int main(){
                                             break;
                                         }
                                         cedulas250 += qntCedulas;
+                                        printf("\nCedulas adicionadas!\n");
                                     break;
                                     case 50:
                                         printf(" -> Quantidade de cedulas de %d: ", escolhaCedulas);
@@ -1072,6 +1074,7 @@ int main(){
                                             break;
                                         }
                                         cedulas50 += qntCedulas;
+                                        printf("\nCedulas adicionadas!\n");
                                     break;
                                     case 20:
                                         printf(" -> Quantidade de cedulas de %d: ", escolhaCedulas);
@@ -1085,6 +1088,7 @@ int main(){
                                             break;
                                         }
                                         cedulas20 += qntCedulas;
+                                        printf("\nCedulas adicionadas!\n");
                                     break;
                                     case 10:
                                         printf(" -> Quantidade de cedulas de %d: ", escolhaCedulas);
@@ -1098,6 +1102,7 @@ int main(){
                                             break;
                                         }
                                         cedulas10 += qntCedulas;
+                                        printf("\nCedulas adicionadas!\n");
                                     break;
                                     case 5:
                                         printf(" -> Quantidade de cedulas de %d: ", escolhaCedulas);
@@ -1111,6 +1116,7 @@ int main(){
                                             break;
                                         }
                                         cedulas5 += qntCedulas;
+                                        printf("\nCedulas adicionadas!\n");
                                     break;
                                     case 2:
                                         printf(" -> Quantidade de cedulas de %d: ", escolhaCedulas);
@@ -1124,6 +1130,7 @@ int main(){
                                             break;
                                         }
                                         cedulas2 += qntCedulas;
+                                        printf("\nCedulas adicionadas!\n");
                                     break;
                                     case 1:
                                         printf(" -> Quantidade de cedulas de %d: ", escolhaCedulas);
@@ -1137,6 +1144,7 @@ int main(){
                                             break;
                                         }
                                         cedulas1 += qntCedulas;
+                                        printf("\nCedulas adicionadas!\n");
                                     break;
                                     case 0:
                                         printf("Retornando ao menu gerente...\n\n");
@@ -1144,7 +1152,6 @@ int main(){
                                     default:
                                         printf(" [ERRO!] Escolha uma opcao valida!\n");
                                 }
-                                printf("\nCedulas adicionadas!\n");
                                 //atualizar valores depois do abastecimento
                                 totalCedulas = cedulas450 + cedulas250 + cedulas50 + cedulas20 + cedulas10 + cedulas5 + cedulas2 + cedulas1;
                                 saldo = cedulas450 * 450 + cedulas250 * 250 + cedulas50 * 50 + cedulas20 * 20 + cedulas10 * 10 + cedulas5 * 5 + cedulas2 * 2 + cedulas1;
