@@ -1046,8 +1046,11 @@ int main(){
                                             break;
                                         }
                                         cedulas450 += qntCedulas;
-                                        printf("\n-> (%d) Cedulas de (R$450) adicionadas!\n", qntCedulas);
+                                        strcpy(flexaoCedula,  "cedula");
+                                        if (qntCedulas > 1) strcpy(flexaoCedula, "cedulas");
+                                        printf("\n-> Reabastecido %d %s de R$450!\n", qntCedulas, flexaoCedula);
                                     break;
+
                                     case 250:
                                         printf(" -> Quantidade de cedulas de %d: ", escolhaCedulas);
                                         scanf("%d", &qntCedulas);
@@ -1060,8 +1063,11 @@ int main(){
                                             break;
                                         }
                                         cedulas250 += qntCedulas;
-                                        printf("\n-> (%d) Cedulas de (R$250) adicionadas!\n", qntCedulas);
+                                        strcpy(flexaoCedula,  "cedula");
+                                        if (qntCedulas > 1) strcpy(flexaoCedula, "cedulas");
+                                        printf("\n-> Reabastecido %d %s de 250\n", qntCedulas, flexaoCedula);
                                     break;
+
                                     case 50:
                                         printf(" -> Quantidade de cedulas de %d: ", escolhaCedulas);
                                         scanf("%d", &qntCedulas);
@@ -1074,8 +1080,11 @@ int main(){
                                             break;
                                         }
                                         cedulas50 += qntCedulas;
-                                        printf("\n-> (%d) Cedulas de (R$50) adicionadas!\n", qntCedulas);
+                                        strcpy(flexaoCedula,  "cedula");
+                                        if (qntCedulas > 1) strcpy(flexaoCedula, "cedulas");
+                                        printf("\n-> Reabastecido %d %s R$50!\n", qntCedulas, flexaoCedula);
                                     break;
+
                                     case 20:
                                         printf(" -> Quantidade de cedulas de %d: ", escolhaCedulas);
                                         scanf("%d", &qntCedulas);
@@ -1088,8 +1097,11 @@ int main(){
                                             break;
                                         }
                                         cedulas20 += qntCedulas;
-                                        printf("\n-> (%d) Cedulas de (R$20) adicionadas!\n", qntCedulas);
+                                        strcpy(flexaoCedula,  "cedula");
+                                        if (qntCedulas > 1) strcpy(flexaoCedula, "cedulas");
+                                        printf("\n-> Reabastecido %d %s R$20!\n", qntCedulas, flexaoCedula);
                                     break;
+
                                     case 10:
                                         printf(" -> Quantidade de cedulas de %d: ", escolhaCedulas);
                                         scanf("%d", &qntCedulas);
@@ -1102,8 +1114,11 @@ int main(){
                                             break;
                                         }
                                         cedulas10 += qntCedulas;
-                                        printf("\n-> (%d) Cedulas de (R$10) adicionadas!\n", qntCedulas);
+                                        strcpy(flexaoCedula,  "cedula");
+                                        if (qntCedulas > 1) strcpy(flexaoCedula, "cedulas");
+                                        printf("\n-> Reabastecido %d %s R$10!\n", qntCedulas, flexaoCedula);
                                     break;
+
                                     case 5:
                                         printf(" -> Quantidade de cedulas de %d: ", escolhaCedulas);
                                         scanf("%d", &qntCedulas);
@@ -1116,8 +1131,11 @@ int main(){
                                             break;
                                         }
                                         cedulas5 += qntCedulas;
-                                        printf("\n-> (%d) Cedulas de (R$5) adicionadas!\n", qntCedulas);
+                                        strcpy(flexaoCedula,  "cedula");
+                                        if (qntCedulas > 1) strcpy(flexaoCedula, "cedulas");
+                                        printf("\n->Reabastecido %d %s de R$5!\n", qntCedulas, flexaoCedula);
                                     break;
+
                                     case 2:
                                         printf(" -> Quantidade de cedulas de %d: ", escolhaCedulas);
                                         scanf("%d", &qntCedulas);
@@ -1130,8 +1148,11 @@ int main(){
                                             break;
                                         }
                                         cedulas2 += qntCedulas;
-                                        printf("\n-> (%d) Cedulas de (R$2) adicionadas!\n", qntCedulas);
+                                        strcpy(flexaoCedula,  "cedula");
+                                        if (qntCedulas > 1) strcpy(flexaoCedula, "cedulas");
+                                        printf("\n-> Reabastecido %d %s de R$2!\n", qntCedulas, flexaoCedula);
                                     break;
+
                                     case 1:
                                         printf(" -> Quantidade de cedulas de %d: ", escolhaCedulas);
                                         scanf("%d", &qntCedulas);
@@ -1144,7 +1165,9 @@ int main(){
                                             break;
                                         }
                                         cedulas1 += qntCedulas;
-                                        printf("\n-> (%d) Cedulas de (R$1) adicionadas!\n", qntCedulas);
+                                        strcpy(flexaoCedula,  "cedula");
+                                        if (qntCedulas > 1) strcpy(flexaoCedula, "cedulas");
+                                        printf("\n-> Reabastecido %d %s de R$1!\n", qntCedulas, flexaoCedula);
                                     break;
                                     case 0:
                                         printf("Retornando ao menu gerente...\n\n");
