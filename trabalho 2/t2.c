@@ -483,12 +483,34 @@ int main(){
                                 e3 = (totalSacado % 10000) / 1000;
                                 e2 = (totalSacado % 100000) / 10000;
                                 e1 = (totalSacado % 1000000) / 100000;
-                                if (e1 == 1 && e2 != 0 && e3 != 0) //primeiro dígito [0] 0 0 0 0 0 só pode ser 0 ou 1
-                                    strcat(valExtenso, "cento e ");
-                                else if (e1 == 1 && e2 == 0 && e3 == 0) 
-                                    strcat(valExtenso, "cem ");
+                                // o valor sacado mostrará numeros por extenso de 0 até 999.999
+                                if(e1 != 0) {  //primeiro dígito [0] 0 0 0 0 0
+                                    if (e1 == 1 && e2 == 0 && e3 == 0) 
+                                        strcat(valExtenso, "cem ");
+                                    else if (e1 == 1)
+                                        strcat(valExtenso, "cento ");
+                                    else if (e1 == 2)
+                                        strcat(valExtenso, "duzentos ");
+                                    else if (e1 == 3)
+                                        strcat(valExtenso, "trezentos ");
+                                    else if (e1 == 4)
+                                        strcat(valExtenso, "quatrocentos ");
+                                    else if (e1 == 5)
+                                        strcat(valExtenso, "quinhentos ");
+                                    else if (e1 == 6)
+                                        strcat(valExtenso, "seiscentos ");
+                                    else if (e1 == 7)
+                                        strcat(valExtenso, "setecentos ");
+                                    else if (e1 == 8)
+                                        strcat(valExtenso, "oitocentos ");
+                                    else if (e1 == 9)
+                                        strcat(valExtenso, "novecentos ");
+                                }
+
 
                                 if(e2 != 0) { //segundo dígito 0 [0] 0 0 0 0
+                                    if(e1 != 0)
+                                        strcat(valExtenso, "e ");
                                     if(e2 == 1 && e3 == 0) //onze, doze, etc
                                         strcat(valExtenso, "dez ");
                                     else if(e2 == 1 && e3 == 1) 
