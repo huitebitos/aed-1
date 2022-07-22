@@ -366,8 +366,9 @@ void excluir_cliente(){
             if(index == clientes_contador - 1) //é o ultimo valor da array
                strcpy(cpf_clientes[index], "");
             else {
-               for (int i = 0; i < (clientes_contador - (index+1)); i++) {
+               for (int i = 0; i < (clientes_contador - index) + 1; i++) {
                   strcpy(cpf_clientes[index+i], cpf_clientes[index+i+1]);
+                  strcpy(contas_clientes[index+i], contas_clientes[index+i+1]);
                }
             } 
             clientes_contador--;
