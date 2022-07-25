@@ -5,17 +5,24 @@
 #include <ctype.h>
 
 
+
+
 /* 
    seria possível fazer uma única array tridimensional clientes[50][2][16]
    mas seria desperdício de memória, já que alguns bytes seriam reservados sem necessidade
 */
 char cpf_clientes[50][15] = {};
 char contas_clientes[50][10] = {};
-int saques_clientes[50][2] = {};
+int saques_clientes[50][10] = {};
 int clientes_contador = 0;
 
+int cedulas[] = {100, 200, 400, 800, 1600, 3200, 6400, 12800};
+int limite[] = {100, 200, 400, 800, 1600, 3200, 6400, 12800};
+int saqueCedulas[] = {0, 0, 0, 0, 0, 0, 0, 0};
 
+int saldo;
 
+//geradores aleatorios
 char geraAlfabeto() {
    int i;
    char letras[] = { 'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
@@ -29,7 +36,7 @@ char geraNumero() {
    return(numeros[i]);
 }
 
-
+//digitos verificadores
 int obtem_primeiro_digito_verificador(char cpf[]) {
    int digito;
 
@@ -108,7 +115,7 @@ int verifica_conta_valida(char conta[]){
 
 }
 
-//retorna o index da conta (se existir)
+//retorna o index da conta (se existir), caso não exista retorna -1
 int indexConta(char conta[]){
    for(int i = 0; i < clientes_contador; i++){
       if (strcmp(conta, contas_clientes[i]) == 0)
@@ -126,12 +133,7 @@ int indexCPF(char cpf[]){
    return -1;
 }
 
-
-
-
-
-
-
+//
 int alterar_cpf(char valor[], char novoValor[]){
    for(int i = 0; i < clientes_contador; i++){
       if (strcmp(valor, cpf_clientes[i]) == 0) {
@@ -151,9 +153,6 @@ int alterar_conta(char valor[], char novoValor[]){
    }
    return 0;
 }
-
-
-
 
 
 //transformar um CPF de 99999999999 para 999.999.999-99
@@ -224,8 +223,6 @@ void geraContaCorrente(char c[]) {
    while (indexConta(c) != -1);
 }
 
-
-
 void gera_cpf_valido(char cpf[]) {
    char _cpf[11] = {};
    do {
@@ -261,24 +258,117 @@ int validar_informacao(char* destino, char* display){
       return 0;
  }
 
+
+//funções de saque
+
+//transforma um index no seu respectivo valor
+//parâmetros: index
+int indexNota(int i){
+   int valor = 0;
+   if (i == 0)
+      valor = 450;
+   if (i == 1)
+      valor = 250;
+   if (i == 2)
+      valor = 50;
+   if (i == 3)
+      valor = 20;
+   if (i == 4)
+      valor = 10;
+   if (i == 5)
+      valor = 5;
+   if (i == 6)
+      valor = 2;
+   if (i == 7)
+      valor = 1;
+   return valor;
+}
+
+void calcularSaldo(){
+   saldo = 0;
+   for (int i = 0; i < (sizeof(cedulas)/sizeof(cedulas[0])); i++){
+      saldo += cedulas[i] * indexNota(i);
+   }
+}
+
+int realizar_saque(int index){ //checar etc
+   calcularSaldo();
+   int saque, i;
+   printf("Valor a ser sacado > ");
+   scanf("%d", &saque);
+   int saqueHolder = saque;
+
+   if (saque > saldo) //erro
+      return -1;
+
+   for (i = 0; i < sizeof(saqueCedulas)/sizeof(saqueCedulas[0]); i++){
+      saqueCedulas[i] = 0;
+   }
+   do {
+      for (i = 0; i < 8; i++) {
+         if (saqueHolder - indexNota(i) >= 0 && cedulas[i] - saqueCedulas[i] - 1 >= 0) {
+            saqueHolder -= indexNota(i);
+            saqueCedulas[i]++;
+            break;
+         }
+      }
+   } while (saqueHolder > 0);
+
+   for (i = 0; i < sizeof(cedulas)/sizeof(cedulas[0]); i++) {
+      cedulas[i] -= saqueCedulas[i];
+      printf("%d cedulas de %d\n", saqueCedulas[i], indexNota(i));
+   }
+   saques_clientes[index][0]++; //adicionar um saque
+   saques_clientes[index][saques_clientes[index][0]] = saque; //adiciona o valor sacado em seu respectivo index;
+   calcularSaldo();
+   system("pause");
+   return 0;
+}
+
+void handlerSaque(){ //bug estranho que crasha sempre que a conta não existe
+   system("cls");
+   char conta[10];
+   int index;
+   int info = validar_informacao(conta, "Insira a conta");
+   int sucesso = 0;
+
+   if (info == -1) {
+      index = indexConta(conta);
+      if (index != -1) 
+         sucesso = realizar_saque(index);
+      else printf("Conta nao existe");
+      system("pause");
+   }
+}
+
+int calcularTotalSacado(int index){
+   int total = 0;
+   for (int i = 1; i < saques_clientes[index][0] + 1; i++){
+      total += saques_clientes[index][i];
+   }
+   return total;
+}
+
+
 //gera uma conta e cpf aleatorios e insere
 void inserir_cliente(){
+   if(clientes_contador < 50){
+      char cpf[15] = {};
+      char conta[10] = {};
+      gera_cpf_valido(cpf);
+      geraContaCorrente(conta);
+      printf("Voce deseja adicionar a conta %s e o CPF %s?\n1. SIM\n2. NAO\n --> ", conta, cpf);
 
-   char cpf[15] = {};
-   char conta[10] = {};
-   gera_cpf_valido(cpf);
-   geraContaCorrente(conta);
-   printf("Voce deseja adicionar a conta %s e o CPF %s?\n1. SIM\n2. NAO\n --> ", conta, cpf);
-
-   int resposta;
-   scanf("%d", &resposta);
-   if(resposta == 1) {
-      strcpy(cpf_clientes[clientes_contador], cpf);
-      strcpy(contas_clientes[clientes_contador], conta);
-      saques_clientes[clientes_contador][0] = 0;
-      saques_clientes[clientes_contador][1] = 0;
-      clientes_contador++;
-   }
+      int resposta;
+      scanf("%d", &resposta);
+      if(resposta == 1) {
+         strcpy(cpf_clientes[clientes_contador], cpf);
+         strcpy(contas_clientes[clientes_contador], conta);
+         saques_clientes[clientes_contador][0] = 0;
+         saques_clientes[clientes_contador][1] = 0;
+         clientes_contador++;
+      }
+   } else printf("Limite");
 }
 
 void mostrar_clientes(){
@@ -348,7 +438,6 @@ void alterar_cliente(){
    system("pause");
 }
 
-
 void excluir_cliente(){
    char val[15];
    int index;
@@ -383,11 +472,48 @@ system("pause");
 
 
 
+//relatorios
+void relatorio_saques(){
+   system("cls");
+   printf("---------------------------\n");
+   printf("Valores Sacados\n");
+   printf("---------------------------\n");
+   for (int i = 0; i < clientes_contador; i++){
+      printf("%s %s", contas_clientes[i], cpf_clientes[i]);
+      for (int j = 1; j < saques_clientes[i][0] + 1; j++) {
+         printf("                          %d\n", saques_clientes[i][j]);
+      }
+      printf("                       %d reais\n", calcularTotalSacado(i));
+   }
+   system("pause");
+}
+void relatorio_saldo(){
+
+}
+void relatorio_cedulas(){
+
+}
+
+void handler_relatorios(int escolha){
+   switch (escolha){
+      case 1:
+         relatorio_saques();
+      break;
+
+      case 2:
+         relatorio_saldo();
+      break;
+
+      case 3:
+         relatorio_cedulas();
+      break;
+   }
+
+}
 
 
 
-
-//handlers e menus
+//menus
 void gerar_menu_principal(){
    system("cls");
    printf("MENU PRINCIPAL\n1. Cliente\n2. Saque\n3. Relatorios\n4. Finalizar\n --> ");
@@ -411,17 +537,15 @@ int escolha_principal(){
    int escolha;
    do {
       gerar_menu_principal();
-      scanf("%d", &escolha);
-   } while (escolha < 1 && escolha > 4);
+   } while ((escolha < 1 && escolha > 4) || (!scanf("%d", &escolha) && getchar()));
    return escolha;
 }
 
 int escolha_cliente(){
-   int escolha;
+   char escolha;
    do {
       gerar_menu_cliente();
-      scanf("%d", &escolha);
-   } while (escolha < 1 && escolha > 5);
+   } while ((escolha < 1 && escolha > 5) || (!scanf("%d", &escolha) && getchar()));
    return escolha;
 }
 
@@ -429,8 +553,7 @@ int escolha_relatorios(){
    int escolha;
    do {
       gerar_menu_relatorios();
-      scanf("%d", &escolha);
-   } while (escolha < 1 && escolha > 4);
+   } while ((escolha < 1 && escolha > 4) || (!scanf("%d", &escolha) && getchar()));
    return escolha;
 }
 
@@ -480,12 +603,17 @@ int main(){
             } while (escolhaCliente != 5);
          break;
 
-         //todo: menu saque
+         case 2:
+            handlerSaque();
+         break;
 
          //menu relatorios
          case 3:
             do {
                escolhaRelatorio = escolha_relatorios();
+
+               handler_relatorios(escolhaRelatorio);
+
             } while (escolhaRelatorio != 4);
          break;
 
