@@ -5,12 +5,8 @@
 #include <ctype.h>
 
 
+//TODO: formatar os relatorios, quantidade de saques, função pra ler, checar se ignora formatação na hora da leitura
 
-
-/* 
-   seria possível fazer uma única array tridimensional clientes[50][2][16]
-   mas seria desperdício de memória, já que alguns bytes seriam reservados sem necessidade
-*/
 char cpf_clientes[50][15] = {};
 char contas_clientes[50][10] = {};
 int saques_clientes[50][10] = {};
@@ -203,6 +199,117 @@ void insere_pontuacao_conta(char origem[], char destino[]){
    }
 }
 
+void centenaExtenso(int n1, int n2, int n3, char valExtenso[]){
+   if (n1 != 0){
+      if(n1 == 1 && n2 == 0 && n2 == 0)
+         strcat(valExtenso, "cem ");
+      else if(n1 == 1)
+            strcat(valExtenso, "cento ");
+      else if(n1 == 2)
+         strcat(valExtenso, "duzentos ");  
+      else if(n1 == 3)
+         strcat(valExtenso, "trezentos ");  
+      else if(n1 == 4)
+         strcat(valExtenso, "quatrocentos ");  
+      else if(n1 == 5)
+         strcat(valExtenso, "quinhentos ");  
+      else if(n1 == 6)
+         strcat(valExtenso, "seiscentos ");  
+      else if(n1 == 7)
+         strcat(valExtenso, "setecentos ");
+      else if(n1 == 8)
+         strcat(valExtenso, "oitocentos ");
+      else if(n1 == 9)
+         strcat(valExtenso, "novecentos ");       
+   }
+
+   if(n2 != 0) { //segundo dígito 0 [0] 0 0 0 0
+      if(n1 != 0)
+         strcat(valExtenso, "e ");
+      if(n2 == 1 && n3 == 0) //onze, doze, etc
+         strcat(valExtenso, "dez ");
+      else if(n2 == 1 && n3 == 1) 
+         strcat(valExtenso, "onze ");
+      else if(n2 == 1 && n3 == 2) 
+         strcat(valExtenso, "doze ");
+      else if(n2 == 1 && n3 == 3) 
+         strcat(valExtenso, "treze "); 
+      else if(n2 == 1 && n3 == 4) 
+         strcat(valExtenso, "quatorze "); 
+      else if(n2 == 1 && n3 == 5) 
+         strcat(valExtenso, "quinze "); 
+      else if(n2 == 1 && n3 == 6) 
+         strcat(valExtenso, "dezesseis "); 
+      else if(n2 == 1 && n3 == 7) 
+         strcat(valExtenso, "dezessete "); 
+      else if(n2 == 1 && n3 == 8) 
+         strcat(valExtenso, "dezoito "); 
+      else if(n2 == 1 && n3 == 9) 
+         strcat(valExtenso, "dezenove "); 
+      else if (n2 == 2)
+         strcat(valExtenso, "vinte ");
+      else if (n2 == 3)
+         strcat(valExtenso, "trinta ");
+      else if (n2 == 4)
+         strcat(valExtenso, "quarenta ");
+      else if (n2 == 5)
+         strcat(valExtenso, "cinquenta ");
+      else if (n2 == 6)
+         strcat(valExtenso, "sessenta ");
+      else if (n2 == 7)
+         strcat(valExtenso, "setenta ");
+      else if (n2 == 8)
+         strcat(valExtenso, "oitenta ");
+      else if (n2 == 9)
+         strcat(valExtenso, "noventa ");            
+   }
+   if(n3 != 0 && n2 != 1) {
+      if(n2 != 0 || n1 != 0)
+         strcat(valExtenso, "e ");
+
+      if(n3 == 1 && (n2 != 0 || n1 != 0)) 
+         strcat(valExtenso, "um ");
+      else if(n3 == 2) 
+         strcat(valExtenso, "dois ");
+      else if(n3 == 3) 
+         strcat(valExtenso, "tres "); 
+      else if(n3 == 4) 
+         strcat(valExtenso, "quatro "); 
+      else if(n3 == 5) 
+         strcat(valExtenso, "cinco "); 
+      else if(n3 == 6) 
+         strcat(valExtenso, "seis "); 
+      else if(n3 == 7) 
+         strcat(valExtenso, "sete "); 
+      else if(n3 == 8) 
+         strcat(valExtenso, "oito "); 
+      else if(n3 == 9) 
+         strcat(valExtenso, "nove ");
+      }
+}
+//objetivo: tirar o espaço do final da string
+void trim(char str[]){
+   if (str[strlen(str)-1] == ' ')
+      str[strlen(str)-1] = '\0';
+}  
+
+void valorExtenso(int num, char valExtenso[]){
+   strcpy(valExtenso, ""); //resetar o valor extenso
+   int e6 = num % 10;
+   int e5 = (num % 100) / 10;
+   int e4 = (num % 1000) / 100;
+   int e3 = (num % 10000) / 1000;
+   int e2 = (num % 100000) / 10000;
+   int e1 = (num % 1000000) / 100000;
+   centenaExtenso(e1, e2, e3, valExtenso);
+   if((e1 != 0 || e2 != 0 || e3 != 0) && (e4 != 0 && ( e5 == 0 || e6 == 0)))
+      strcat(valExtenso, "mil e ");
+   else if(e1 != 0 || e2 != 0 || e3 != 0)
+      strcat(valExtenso, "mil ");
+   centenaExtenso(e4, e5, e6, valExtenso);
+   trim(valExtenso);
+}
+
 
 //objetivo:gera aleatoriamente um numero de conta corrente no formato 999.999-X
 //parametros: c onde armazera a conta gerada
@@ -321,11 +428,10 @@ int realizar_saque(int index){ //checar etc
    saques_clientes[index][0]++; //adicionar um saque
    saques_clientes[index][saques_clientes[index][0]] = saque; //adiciona o valor sacado em seu respectivo index;
    calcularSaldo();
-   system("pause");
    return 0;
 }
 
-void handlerSaque(){ //bug estranho que crasha sempre que a conta não existe
+void handlerSaque(){ 
    system("cls");
    char conta[10];
    int index;
@@ -474,24 +580,51 @@ system("pause");
 
 //relatorios
 void relatorio_saques(){
+   int totalGeral = 0;
+   char valExtenso[80];
    system("cls");
    printf("---------------------------\n");
    printf("Valores Sacados\n");
    printf("---------------------------\n");
    for (int i = 0; i < clientes_contador; i++){
-      printf("%s %s", contas_clientes[i], cpf_clientes[i]);
+      totalGeral += calcularTotalSacado(i);
+      printf("%s %s     ", contas_clientes[i], cpf_clientes[i]);
       for (int j = 1; j < saques_clientes[i][0] + 1; j++) {
-         printf("                          %d\n", saques_clientes[i][j]);
+         printf("R$ %d\n                             ", saques_clientes[i][j]);
       }
-      printf("                       %d reais\n", calcularTotalSacado(i));
+      printf("                                 R$ %d\n", calcularTotalSacado(i));
+
    }
+   valorExtenso(totalGeral, valExtenso);
+   printf("---------------------------\n");
+   printf("R$ %d (%s)\n", totalGeral, valExtenso);
+   printf("---------------------------\n");
    system("pause");
 }
 void relatorio_saldo(){
-
+   calcularSaldo();
+   char valExtenso[80];
+   valorExtenso(saldo, valExtenso);
+   system("cls");
+   printf("---------------------------\n");
+   printf("Relatório 'Valor do saldo existente '\n");
+   printf("---------------------------\n");
+   printf("R$ %d (%s)\n", saldo, valExtenso);
+   printf("---------------------------\n");
+   system("pause");
 }
 void relatorio_cedulas(){
-
+   char valExtenso[80];
+   system("cls");
+   printf("---------------------------\n");
+   printf("Relatório 'Quantidade de cédulas existentes'\n");
+   printf("---------------------------\n");
+   for(int i = 0; i < sizeof(cedulas)/sizeof(cedulas[0]); i++){
+      valorExtenso(cedulas[i], valExtenso);
+      printf("Cedula %d %d (%s)\n", indexNota(i), cedulas[i], valExtenso);
+   }
+   printf("---------------------------\n");
+   system("pause");
 }
 
 void handler_relatorios(int escolha){
@@ -537,6 +670,7 @@ int escolha_principal(){
    int escolha;
    do {
       gerar_menu_principal();
+   //esse while serve pra otimizar o scanf e não crashar quando colocar um char.
    } while ((escolha < 1 && escolha > 4) || (!scanf("%d", &escolha) && getchar()));
    return escolha;
 }
