@@ -193,6 +193,30 @@ void insere_pontuacao_conta(char origem[], char destino[]){
       destino[8] = toupper(origem[6]);
       destino[9] = '\0';  
    }
+   else if (strlen(origem) == 8 && !isdigit(origem[3])){ //tem 8 digitos e o valor 000[.]000X (o quarto char nao é um digito)
+      destino[0] = origem[0];
+      destino[1] = origem[1];
+      destino[2] = origem[2];
+      destino[3] = origem[3];
+      destino[4] = origem[4];
+      destino[5] = origem[5];
+      destino[6] = origem[6];
+      destino[7] = '-';
+      destino[8] = toupper(origem[7]);
+      destino[9] = '\0';     
+   }
+   else if (strlen(origem) == 8 && !isdigit(origem[6])){ //tem 8 digitos e o valor 000000[-]X (o quarto char nao é um digito)
+      destino[0] = origem[0];
+      destino[1] = origem[1];
+      destino[2] = origem[2];
+      destino[3] = '.';
+      destino[4] = origem[3];
+      destino[5] = origem[4];
+      destino[6] = origem[5];
+      destino[7] = origem[6];
+      destino[8] = toupper(origem[7]);
+      destino[9] = '\0';    
+   }
    else if(strlen(origem) == 9){ //ja está formatado
       destino[0] = origem[0];
       destino[1] = origem[1];
