@@ -53,7 +53,7 @@ int obtem_segundo_digito_verificador(char cpf[]) {
 }
 
 void errorMsg(char msg[]){
-   printf("[ERRO!] %s\n");
+   printf("[ERRO!] %s\n", msg);
 }
 
 void criarInterface(char interface[]){
@@ -451,15 +451,13 @@ void handlerSaque(){
    int info = validar_informacao(conta, "Insira a conta");
    int sucesso = 0;
    
-   switch (info) {
+   switch (info){
       case -1:
          index = indexConta(conta);
          if (index != -1) 
             sucesso = realizar_saque(index);
          else errorMsg("Conta nao existe!");
       break;
-
-
       default:
          errorMsg("Use sua CONTA para realizar saques");
    }
