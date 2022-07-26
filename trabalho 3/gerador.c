@@ -355,13 +355,13 @@ int validar_informacao(char* destino, char* display){
       insere_pontuacao_conta(val, destino);
    else if (strlen(val) == 11) //cpf sem pontuação (não validado)
       insere_pontuacao_cpf(val, destino);
-   else strcpy(val, destino);
+   else strcpy(destino, val);
 
    if(verifica_cpf_valido(destino)) //retorna 1 se for um CPF válido
       return 1;
    else if (verifica_conta_valida(destino)) //retorna -1 se for uma CONTA válida
       return -1;
-   else //retorna 0 se nennhum dos dois
+   else //retorna 0 se nenhum dos dois
       return 0;
  }
 
@@ -423,7 +423,8 @@ int realizar_saque(int index){ //checar etc
 
    for (i = 0; i < sizeof(cedulas)/sizeof(cedulas[0]); i++) {
       cedulas[i] -= saqueCedulas[i];
-      printf("%d cedulas de %d\n", saqueCedulas[i], indexNota(i));
+      if (saqueCedulas[i] != 0)
+         printf("%d cedulas de %d\n", saqueCedulas[i], indexNota(i));
    }
    saques_clientes[index][0]++; //adicionar um saque
    saques_clientes[index][saques_clientes[index][0]] = saque; //adiciona o valor sacado em seu respectivo index;
@@ -433,18 +434,24 @@ int realizar_saque(int index){ //checar etc
 
 void handlerSaque(){ 
    system("cls");
-   char conta[10];
+   char conta[11];
    int index;
    int info = validar_informacao(conta, "Insira a conta");
    int sucesso = 0;
+   
+   switch (info) {
+      case -1:
+         index = indexConta(conta);
+         if (index != -1) 
+            sucesso = realizar_saque(index);
+         else printf("Conta nao existe");
+      break;
 
-   if (info == -1) {
-      index = indexConta(conta);
-      if (index != -1) 
-         sucesso = realizar_saque(index);
-      else printf("Conta nao existe");
-      system("pause");
+
+      default:
+         printf("ERRO! Use sua CONTA para realizar saques");
    }
+   system("pause");
 }
 
 int calcularTotalSacado(int index){
