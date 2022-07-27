@@ -34,7 +34,7 @@ char geraNumero() {
 
 //digitos verificadores
 int obtem_primeiro_digito_verificador(char cpf[]) {
-   int digito;
+   int digito=0;
 
    for (int i = 0; i < 9; i++) {
       digito += (cpf[i] - '0') * (10 - i);
@@ -43,7 +43,7 @@ int obtem_primeiro_digito_verificador(char cpf[]) {
    return (digito);
 }
 int obtem_segundo_digito_verificador(char cpf[]) {
-   int digito;
+   int digito=0;
 
    for (int i = 0; i < 10; i++) {
       digito += (cpf[i] - '0') * (11 - i);
