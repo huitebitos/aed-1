@@ -53,20 +53,21 @@ int obtem_segundo_digito_verificador(char cpf[]) {
 }
 
 void errorMsg(char msg[]){
-   printf("[ERRO!] %s\n", msg);
+   printf("[ERRO] %s\n", msg);
 }
 
 void criarInterface(char interface[]){
-   printf("--------------------------------------\n");
+   printf("-----------------------------------------------------------------------\n");
    printf("%s\n", interface);
-   printf("--------------------------------------\n");
+   printf("-----------------------------------------------------------------------\n");
 }
 
 //formato 999.999.999-99
 //retorna 1 se cpf for válido e 0 se for inválido
 int verifica_cpf_valido(char cpf[]) {
    int valido = 1;
-   char _cpf[11] = {cpf[0], cpf[1], cpf[2], cpf[4], cpf[5], cpf[6], cpf[8], cpf[9], cpf[10], cpf[12], cpf[13]};
+   char _cpf[] = {cpf[0], cpf[1], cpf[2], cpf[4], cpf[5], cpf[6], cpf[8], cpf[9], cpf[10], cpf[12], cpf[13]};
+   
    if (_cpf[0] == _cpf[1] && 
       _cpf[1] == _cpf[2] && 
       _cpf[2] == _cpf[3] &&
@@ -79,8 +80,10 @@ int verifica_cpf_valido(char cpf[]) {
       _cpf[9] == _cpf[10])
          valido = 0;
    
-   if (obtem_primeiro_digito_verificador(_cpf) != _cpf[9] || obtem_segundo_digito_verificador(_cpf) != _cpf[10])
-      valido = 0;
+   if ((obtem_primeiro_digito_verificador(_cpf) != _cpf[9]) || (obtem_segundo_digito_verificador(_cpf) != _cpf[10]))
+      valido = 0; 
+      //ERRO, este if sempre e atendido, entao n da pra mudar o cpf
+      //validacao (no modulo de alteracao) acaba recebendo 0, ai nao executa (isso so qnd colocamos o cpf; conta vai normal)
    
    if (!(isdigit(cpf[0]) &&
    isdigit(cpf[1]) &&
@@ -115,8 +118,6 @@ int verifica_conta_valida(char conta[]){
       return 1;
 
    return 0;
-   
-
 }
 
 //retorna o index da conta (se existir), caso não exista retorna -1
@@ -333,6 +334,12 @@ void valorExtenso(int num, char valExtenso[]){
    int e3 = (num % 10000) / 1000;
    int e2 = (num % 100000) / 10000;
    int e1 = (num % 1000000) / 100000;
+
+   if(num == 1)
+      strcat(valExtenso, "um ");
+   else if(num == 0)
+      strcat(valExtenso, "zero ");
+
    centenaExtenso(e1, e2, e3, valExtenso);
    if((e1 != 0 || e2 != 0 || e3 != 0) && (e4 != 0 && ( e5 == 0 || e6 == 0)))
       strcat(valExtenso, "mil e ");
@@ -383,7 +390,7 @@ int validar_informacao(char* destino, char* display){
    printf("%s\n --> ", display);
    scanf("%s", &val);
 
-   if(strlen(val) == 7) //conta sem pontuação (ainda não validada)
+   if((strlen(val) >= 7) && (strlen(val) <=9)) //conta (ainda não validada)
       insere_pontuacao_conta(val, destino);
    else if (strlen(val) == 11) //cpf sem pontuação (não validado)
       insere_pontuacao_cpf(val, destino);
@@ -456,15 +463,23 @@ int realizar_saque(int index){ //checar etc
 
    for (i = 0; i < sizeof(cedulas)/sizeof(cedulas[0]); i++) {
       cedulas[i] -= saqueCedulas[i];
-      if (saqueCedulas[i] != 0)
-         printf("%d cedulas de %d\n", saqueCedulas[i], indexNota(i));
+      if (saqueCedulas[i] != 0){
+         if(saqueCedulas[i] == 1)
+            printf("(%d) cedula de R$ %d\n", saqueCedulas[i], indexNota(i));
+         else
+            printf("(%d) cedulas de R$ %d\n", saqueCedulas[i], indexNota(i));
+      }
    }
    valorExtenso(saque, txt);
-   if (saque > 1) printf("%s reais\n", txt);
-   else printf("%s real\n", txt);
-   saques_clientes[index][0]++; //adicionar um saque
-   saques_clientes[index][saques_clientes[index][0]] = saque; //adiciona o valor sacado em seu respectivo index;
-   calcularSaldo();
+   if (saque != 0){
+      if (saque > 1) printf("Valor sacado: %s reais\n\n", txt);
+      else printf("Valor sacado: %s real\n\n", txt);
+
+      saques_clientes[index][0]++; //adicionar um saque
+      saques_clientes[index][saques_clientes[index][0]] = saque; //adiciona o valor sacado em seu respectivo index;
+      calcularSaldo();
+   } else errorMsg("Operacao nao realizada!\n");
+
    return 0;
 }
 
@@ -480,10 +495,10 @@ void handlerSaque(){
          index = indexConta(conta);
          if (index != -1) 
             sucesso = realizar_saque(index);
-         else errorMsg("Conta nao existe!");
+         else errorMsg("Esta conta nao existe!\n");
       break;
       default:
-         errorMsg("Use sua CONTA para realizar saques");
+         errorMsg("Use sua CONTA para realizar saques!\n");
    }
    system("pause");
 }
@@ -495,7 +510,6 @@ int calcularTotalSacado(int index){
    }
    return total;
 }
-
 
 //gera uma conta e cpf aleatorios e insere
 void inserir_cliente(){
@@ -510,7 +524,7 @@ void inserir_cliente(){
       scanf("%d", &resposta);
 
       if (clientes_contador >= 50 && resposta == 1)
-         errorMsg("Numero de contas excede 50!");
+         errorMsg("Numero de contas excede 50!\n");
       else if(resposta == 1) {
          strcpy(cpf_clientes[clientes_contador], cpf);
          strcpy(contas_clientes[clientes_contador], conta);
@@ -530,7 +544,7 @@ void mostrar_clientes(){
       printf("Conta: %s\n", contas_clientes[i]);
       printf("CPF: %s\n", cpf_clientes[i]);
       printf("Saques realizados: %d\n", saques_clientes[i][0]);
-      printf("Valor total sacado: %d\n", saques_clientes[i][1]);
+      printf("Valor total sacado: R$ %d\n", saques_clientes[i][1]);
       printf("-----------------------------\n\n");
    }
    system("pause");
@@ -542,49 +556,53 @@ void alterar_cliente(){
    int index;
 
    system("cls");
-   int alteracao = validar_informacao(val, "Insira a CONTA/CPF a ser alterado");
+   int alteracao = validar_informacao(val, "Insira a CONTA/CPF a alterar");
 
    //ALTERAR O CPF (14 DIGITOS)
-   if(alteracao == 1){
+   if (alteracao == 1){
       index = indexCPF(val);
 
       if (index == -1)
-         errorMsg("CPF nao existe no banco de dados\n");
+         errorMsg("CPF nao existente no banco de dados!\n");
       else if (saques_clientes[index][0])
-         errorMsg("Nao e possivel alterar o CPF depois de ter realizado saques\n");
+         errorMsg("Nao e possivel alterar o CPF depois de ter realizado saques!\n");
       else {
          validar_informacao(newVal, "\nInsira o novo CPF");
          
          if(!verifica_cpf_valido(newVal))
-            errorMsg("CPF invalido\n ");
+            errorMsg("CPF invalido!\n");
          else if(indexCPF(newVal) != -1)
-            errorMsg("ja consta no sistema\n ");
+            errorMsg("O CPF ja existe no sistema!\n");
          else if(!alterar_cpf(val, newVal))
-            errorMsg("foi possivel alterar o CPF\n ");
+            errorMsg("Nao foi possivel alterar o CPF!\n");
          else 
-            printf("\n[OK!] Alteracao concluida");
+            printf("\n[OK] Alteracao concluida!\nDE: %s\nPARA: %s\n", val, newVal);
       }
    }
-
+   //ALTERAR CONTA
    else if (alteracao == -1) {
       index = indexConta(val);
-       if (index == -1)
-         errorMsg("CONTA nao existe no banco de dados\n");
+
+      if (index == -1)
+         errorMsg("Conta inexistente no banco de dados!\n");
       else if (saques_clientes[index][0])
-         errorMsg("Nao e possivel alterar a CONTA depois de ter realizado saques\n");
-      else{
+         errorMsg("Nao e possivel alterar a conta depois de ter realizado saques!\n");
+      else {
         validar_informacao(newVal, "\nInsira a nova CONTA");
 
          if(!verifica_conta_valida(newVal))
-            errorMsg("\nCONTA invalida\n ");
+            errorMsg("\nConta invalida!\n");
          else if(indexConta(newVal) != -1)
-            errorMsg("CONTA ja consta no sistema\n ");
+            errorMsg("A Conta ja existe no sistema!\n");
          else if(!alterar_conta(val, newVal))
-            errorMsg("Nao foi possivel\n ");
+            errorMsg("Nao foi possivel alterar a conta!\n");
          else 
-            printf("\nAlteracao concluida\nDE: %s\nPARA: %s", val, newVal);
+            printf("\n[OK] Alteracao concluida!\nDE: %s\nPARA: %s\n", val, newVal);
       }
    }
+
+   else errorMsg("Dado invalido!\n");
+
    system("pause");
 }
 
@@ -593,13 +611,13 @@ void excluir_cliente(){
    int index;
    switch(validar_informacao(val, "Insira a CONTA que deseja excluir")){
       case 1: //CPF
-         errorMsg("Voce precisa fornecer a CONTA para excluir.");
+         errorMsg("Voce precisa fornecer a CONTA para exclui-la!\n");
       break;
 
       case -1: //CONTA
          index = indexConta(val);
          if (index == -1)
-            errorMsg("A CONTA fornecida nao existe");
+            errorMsg("Nao existem contas no banco de dados!\n");
 
          else if (!saques_clientes[index][0]){
             if(index == clientes_contador - 1) //é o ultimo valor da array
@@ -612,36 +630,38 @@ void excluir_cliente(){
             } 
             clientes_contador--;
          }
-         else errorMsg("Impossivel excluir conta apos ter realizado saques");
+         else errorMsg("Nao e possivel excluir a conta depois de ter realizado saques!\n");
       break;
 
       default:
-         errorMsg("Numero da conta nao existe no sistema.");
+         errorMsg("Conta inexistente no banco de dados!\n");
    }
 system("pause");
 }
-
-
 
 //relatorios
 void relatorio_saques(){
    int totalGeral = 0;
    char valExtenso[80];
    system("cls");
-   criarInterface("Relatorio 'Valores Sacados'");
+   criarInterface("Relatorio | Valores sacados");
    for (int i = 0; i < clientes_contador; i++){
       totalGeral += calcularTotalSacado(i);
       printf("%s %s     ", contas_clientes[i], cpf_clientes[i]);
       for (int j = 1; j < saques_clientes[i][0] + 1; j++) {
          printf("R$ %d\n                             ", saques_clientes[i][j]);
       }
-      printf("                                 R$ %d\n", calcularTotalSacado(i));
+      printf("                             R$ %d\n", calcularTotalSacado(i));
 
    }
    valorExtenso(totalGeral, valExtenso);
-   printf("---------------------------\n");
-   printf("R$ %d (%s)\n", totalGeral, valExtenso);
-   printf("---------------------------\n");
+   printf("-----------------------------------------------------------------------\n");
+   if (totalGeral == 1)
+      printf("R$ %d (%s real)\n", totalGeral, valExtenso);
+   else
+      printf("R$ %d (%s reais)\n", totalGeral, valExtenso);
+   printf("-----------------------------------------------------------------------\n\n");
+
    system("pause");
 }
 void relatorio_saldo(){
@@ -649,20 +669,26 @@ void relatorio_saldo(){
    char valExtenso[80];
    valorExtenso(saldo, valExtenso);
    system("cls");
-   criarInterface("Relatorio 'Valor do Saldo Existente'");
-   printf("R$ %d (%s)\n", saldo, valExtenso);
-   printf("---------------------------\n");
+   criarInterface("Relatorio | Valor do saldo existente");
+
+   if (saldo == 1)
+      printf("R$ %d (%s real)\n", saldo, valExtenso);
+   else
+      printf("R$ %d (%s reais)\n", saldo, valExtenso);
+   printf("-----------------------------------------------------------------------\n\n");
+
    system("pause");
 }
 void relatorio_cedulas(){
    char valExtenso[80];
    system("cls");
-   criarInterface("Relatório 'Quantidade de cédulas existentes'\n");
+   criarInterface("Relatorio | Quantidade de cedulas existentes\n");
    for(int i = 0; i < sizeof(cedulas)/sizeof(cedulas[0]); i++){
       valorExtenso(cedulas[i], valExtenso);
-      printf("Cedula %d %d (%s)\n", indexNota(i), cedulas[i], valExtenso);
+   
+      printf("R$ %d : %d (%s)\n", indexNota(i), cedulas[i], valExtenso);
    }
-   printf("---------------------------\n");
+   printf("-----------------------------------------------------------------------\n\n");
    system("pause");
 }
 
@@ -680,31 +706,26 @@ void handler_relatorios(int escolha){
          relatorio_cedulas();
       break;
    }
-
 }
-
 
 
 //menus
 void gerar_menu_principal(){
    system("cls");
-   printf("MENU PRINCIPAL\n1. Cliente\n2. Saque\n3. Relatorios\n4. Finalizar\n --> ");
+   printf("MENU PRINCIPAL\n\n1. Cliente\n2. Saque\n3. Relatorios\n4. Finalizar\n --> ");
 }
 
 void gerar_menu_cliente(){
    system("cls");
-   printf("MENU CLIENTE\n1. Incluir\n2. Mostrar\n3. Alterar\n4. Excluir\n5. Voltar\n --> ");
+   printf("MENU CLIENTE\n\n1. Incluir\n2. Mostrar\n3. Alterar\n4. Excluir\n5. Voltar ao menu principal\n --> ");
 }
 
 void gerar_menu_relatorios(){
    system("cls");
-   printf("1-Valores sacados\n2. Valor do saldo existente\n3. Quantidade de cedulas existentes\n4. Voltar ao menu principal\n --> ");
+   printf("RELATORIOS\n\n1. Valores sacados\n2. Valor do saldo existente\n3. Quantidade de cedulas existentes\n4. Voltar ao menu principal\n --> ");
 }
 
-
-
-
-
+//
 int escolha_principal(){
    int escolha;
    do {
@@ -750,15 +771,10 @@ void handler_cliente(int escolha){
       break;
 
    }
-
 }
 
 
-
-
-
-
-
+//main
 int main(){
    int escolha, escolhaCliente, escolhaRelatorio;
    do {
@@ -792,7 +808,6 @@ int main(){
 
       }
    } while (escolha != 4);
-
 
    return 0;
 }
