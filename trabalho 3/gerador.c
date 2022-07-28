@@ -5,7 +5,7 @@
 #include <ctype.h>
 
 
-//TODO: formatar os relatorios, quantidade de saques, função pra ler, checar se ignora formatação na hora da leitura
+//TODO: comentarios com nomes do grupo, mensagem de erro ao sacar mais do que ha no caixa, cometarios adicionais no array de saque
 
 char cpf_clientes[50][15] = {};
 char contas_clientes[50][10] = {};
