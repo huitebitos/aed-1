@@ -16,6 +16,7 @@ INTEGRANTES DO GRUPO
 char cpf_clientes[50][15] = {};
 char contas_clientes[50][10] = {};
 int saques_clientes[50][10] = {};
+int saques_clientes_total[50][1] = {}; //total sacado por cada cliente em "Mostrar"
 int clientes_contador = 0;
 //quantidade
 int cedulas[] = {100, 200, 400, 800, 1600, 3200, 6400, 12800};
@@ -449,9 +450,10 @@ int realizar_saque(int index){ //Checar etc
    scanf("%d", &saque);
    int saqueHolder = saque;
 
-   if (saque > saldo) //erro
+   if (saque > saldo) { //erro
       errorMsg("Saldo insuficiente no caixa!\n");
       return -1;
+   }
 
    for (i = 0; i < sizeof(saqueCedulas)/sizeof(saqueCedulas[0]); i++){
       saqueCedulas[i] = 0;
@@ -478,12 +480,13 @@ int realizar_saque(int index){ //Checar etc
    }
 
    valorExtenso(saque, txt);
-   if (saque != 0){
+   if (saque > 0){
       if (saque > 1) printf("\nValor sacado: %s reais\n\n", txt);
       else printf("\nValor sacado: %s real\n\n", txt);
 
       saques_clientes[index][0]++; //adicionar um saque
-      saques_clientes[index][saques_clientes[index][0]] = saque; //adiciona o valor sacado em seu respectivo index;
+      saques_clientes_total[index][0] += saque; //adiciona o valor do saque ao já sacado no total de cada cliente (apção "Mostrar")
+      saques_clientes[index][saques_clientes[index][0]] = saque; //adiciona o valor sacado em seu respectivo index
       calcularSaldo();
    } else errorMsg("Operacao nao realizada!\n"); //Sacar 0 reais não é possível
 
@@ -559,7 +562,7 @@ void mostrar_clientes(){
          printf("Conta: %s\n", contas_clientes[i]);
          printf("CPF: %s\n", cpf_clientes[i]);
          printf("Saques realizados: %d\n", saques_clientes[i][0]);
-         printf("Valor total sacado: R$ %d\n", saques_clientes[i][1]);
+         printf("Valor total sacado: R$ %d\n", saques_clientes_total[i][0]);
          printf("-----------------------------\n\n");
       }
    } else printf("Nenhum cliente cadastrado no sistema!\n\n"); //0 clientes
