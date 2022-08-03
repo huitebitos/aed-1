@@ -642,20 +642,20 @@ void excluir_cliente(){
          case -1: //CONTA
             index = indexConta(val);
            
-         if (index != -1) {
-            if (!saques_clientes[index][0]){
-               if(index == clientes_contador - 1) //é o ultimo valor da array
-                  strcpy(cpf_clientes[index], "");
-               else {
-                  for (int i = 0; i < (clientes_contador - index) + 1; i++) {
-                     strcpy(cpf_clientes[index+i], cpf_clientes[index+i+1]);
-                     strcpy(contas_clientes[index+i], contas_clientes[index+i+1]);
-                  }
-               } 
-               clientes_contador--; //menos um cliente :(
-               printf("[OK] Conta excluida com sucesso!\n\n");
-            } else errorMsg("Nao e possivel excluir a conta depois de ter realizado saques!\n");
-         }
+            if (index != -1) {
+               if (!saques_clientes[index][0]){
+                  if(index == clientes_contador - 1) //é o ultimo valor da array
+                     strcpy(cpf_clientes[index], "");
+                  else {
+                     for (int i = 0; i < (clientes_contador - index) + 1; i++) {
+                        strcpy(cpf_clientes[index+i], cpf_clientes[index+i+1]);
+                        strcpy(contas_clientes[index+i], contas_clientes[index+i+1]);
+                     }
+                  } 
+                  clientes_contador--; //menos um cliente :(
+                  printf("[OK] Conta excluida com sucesso!\n\n");
+               } else errorMsg("Nao e possivel excluir a conta depois de ter realizado saques!\n");
+            }
          break;
 
          default:
