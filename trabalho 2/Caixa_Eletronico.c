@@ -27,7 +27,7 @@ int main(){
     int cedulas450, cedulas250, cedulas50, cedulas20, cedulas10, cedulas5, cedulas2, cedulas1;
     cedulas450 = 100;
     cedulas250 = 200;
-    cedulas50 = 400;
+    cedulas50 = 0;
     cedulas20 = 800; 
     cedulas10 = 1600;
     cedulas5 = 3200;
@@ -199,9 +199,6 @@ int main(){
                 saque5 = 0;
                 saque2 = 0;
                 saque1 = 0;
-
-
-
                 while (saque_holder > 0) { // saque_holder != 0 testar dps
                     if (saque_holder - 450 >= 0 && cedulas450 - 1 - saque450 >= 0) {
                         saque_holder -= 450;
@@ -248,7 +245,6 @@ int main(){
                         break;
                     }
                 }
-
                 cedulas450 -= saque450;
                 cedulas250 -= saque250;
                 cedulas50  -= saque50;
