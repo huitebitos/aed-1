@@ -1,61 +1,34 @@
-/*  Resolva beecrowd | 2358 (Bact�ria II)
+/*
+ ______     __         __  __     __   __     ______     ______
+/\  __ \   /\ \       /\ \/\ \   /\ "-.\ \   /\  __ \   /\  ___\
+\ \  __ \  \ \ \____  \ \ \_\ \  \ \ \-.  \  \ \ \/\ \  \ \___  \
+ \ \_\ \_\  \ \_____\  \ \_____\  \ \_\\"\_\  \ \_____\  \/\_____\
+  \/_/\/_/   \/_____/   \/_____/   \/_/ \/_/   \/_____/   \/_____/
 
-- Considere um caso de teste para cada execu��o;
-
-- Os dados de execu��o dever�o ser recebidos via argumento do programa
-  na linha de comando;
-
-- Caso haja mais de uma solu��o, imprima todas elas, sem repeticoes;
-
-- Aten��o, a sua solu��o n�o precisa necessariamente rodar tamb�m no
-  ambiente beecrowd. L� exige-se o uso de t�cnicas avan�adas de organiza��o
-  de dados para a constru��o de uma solu��o que atenda aos testes do
-  ambiente beecrowd.
-
+                    * Emmerson Badocco
+                   * Gustavo Kermaunar
+                     * Gustavo Martins
+                        * Victor Keony
+                    * Vinícius Schautz
 
 
-    Exemplos de execu��es
 
-    app 3 GCTTTCGACGAT GATCGAGCTTCGAA GGTCTAGCTAAT TCGA
-    SAIDA_2 = Quantidade de bacterias: 3
-    SAIDA_3 = Bacteria: GCTTTCGACGAT
-    SAIDA_3 = Bacteria: GATCGAGCTTCGAA
-    SAIDA_3 = Bacteria: GGTCTAGCTAAT
-    SAIDA_4 = Virus: TCGA
-    SAIDA_5 = Bacteria infectada: GCTT
-    SAIDA_5 = Bacteria infectada: GAGCTA
-    SAIDA_5 = Bacteria infectada: GGTCTAGCTAAT
-    SAIDA_6 = DNA resultante: GCT
+*/
 
+/*
+    //   ) ) //   ) )  //   ) )
+   //   / / //___/ /  ((
+  //   / / / __  (      \\
+ //   / / //    ) )       ) )
+((___/ / //____/ / ((___ / /
+                Observação
 
-    app 5 AGCT TGC CGCAA TGTC ATGTTC T
-    SAIDA_2 = Quantidade de bacterias: 5
-    SAIDA_3 = Bacteria: AGCT
-    SAIDA_3 = Bacteria: TGC
-    SAIDA_3 = Bacteria: CGCAA
-    SAIDA_3 = Bacteria: TGTC
-    SAIDA_3 = Bacteria: ATGTTC
-    SAIDA_4 = Virus: T
-    SAIDA_5 = Bacteria infectada: AGC
-    SAIDA_5 = Bacteria infectada: GC
-    SAIDA_5 = Bacteria infectada: CGCAA
-    SAIDA_5 = Bacteria infectada: GC
-    SAIDA_5 = Bacteria infectada: AGC
-    SAIDA_6 = DNA resultante: GC
+           É possível otimizar o tempo do código drásticamente utilizando
+           suffix arrays, porém, para a construção do mesmo, é necessário
+           utilizar 'struct', assunto que, antes da realização do trabalho, 
+           não foi ensinado, e, portanto, não é permitido o uso.
 
 
-    app 2 AAAACGTGAGTGTAT AAAATGTAGGTGAAAA T
-    SAIDA_2 = Quantidade de bacterias: 2
-    SAIDA_3 = Bacteria: AAAACGTGAGTGTAT
-    SAIDA_3 = Bacteria: AAAATGTAGGTGAAAA
-    SAIDA_4 = Virus: T
-    SAIDA_5 = Bacteria infectada: AAAACGGAGGA
-    SAIDA_5 = Bacteria infectada: AAAAGAGGGAAAA
-    SAIDA_6 = DNA resultante: AAAA
-    SAIDA_6 = DNA resultante: GAGG
-
-    app 2 AGTC AG
-    SAIDA_1 = Quantidade invalida de argumentos!
 */
 
 #include <stdlib.h>
@@ -73,6 +46,9 @@
 #define SAIDA_5 "\nSAIDA_5 = Bacteria infectada: %s"
 #define SAIDA_6 "\nSAIDA_6 = DNA resultante: %s"
 
+
+//Objetivo: em um array de tamanho 'len', retornar o tamanho do maior elemento.
+//Parâmetros: um array 'arr' e o tamanho 'len' do array.
 int getBiggestLength(char arr[LIMITE_BACTERIAS][COMPR_BACTERIAS], int len) {
     int length = 0; //inicializa com um valor pequeno
     for (int i = 0; i < len; i++)
@@ -82,28 +58,42 @@ int getBiggestLength(char arr[LIMITE_BACTERIAS][COMPR_BACTERIAS], int len) {
     
 }
 
-void separar(char *dest, char *texto, char *remover)
-{
-    char *rem = strstr(texto, remover);
-    char *finish = rem + strlen(remover);
+/*
+Objetivo: Dado um array de caracteres 'texto', remover a parte 'remover' do texto e 
+          armazená-lo em um array de caracteres 'dest'.
+Parâmetros: array de caracteres 'dest' e 'texto' para o destino e o texto, respectivamente
+            array de caracteres 'remover', que se refere a parte de deverá ser removida.
+*/
+void separar(char *dest, char *texto, char *remover) {
+    char *rem = strstr(texto, remover); //parte a ser removida
+    char *finish = rem + strlen(remover); 
     char start[50];
     size_t tamanho = strlen(finish) + strlen(remover) - 1;
-    tamanho = strlen(texto) - tamanho - 1;
-    strncpy(start, texto, tamanho);
+    // [start] + [rem] + [finish] = texto
+
+    tamanho = strlen(texto) - tamanho - 1; //subtrai a parte removida e o final do texto
+    strncpy(start, texto, tamanho); //copia o texto até a parte que foi removida
     start[tamanho] = '\0';
     strcat(start, finish);
     strcpy(dest, start);
 }
 
+//Objetivo: ver se existe uma string 'texto' em um array 'array'.
+//Parâmetros: uma string 'texto', um array 'array' e o tamanho 'arraySize' do array. 
 int existsInArray(char *texto, char array[LIMITE_BACTERIAS][COMPR_BACTERIAS], int arraySize) {
     for (int i = 0; i < arraySize; i++) {
         if (!strcmp(texto, array[i])) //são iguais
             return 1;
     }
-    
     return 0; //não existe
 }
 
+/*
+Objetivo: encontrar os caracteres em comum de duas strings 't1' e 't2'
+          e armazenar em um array 'substrings' e retornar quantos caracteres foram alterados.
+Parâmetros: duas strings 't1' e 't2' para serem comparadas e um array 'substrings' de tamanho
+            'index'.
+*/
 int findCommon(char* t1, char* t2, char substrings[LIMITE_BACTERIAS][COMPR_BACTERIAS], int *index){
     size_t x = strlen(t1);
     size_t y = strlen(t2);
@@ -128,18 +118,28 @@ int findCommon(char* t1, char* t2, char substrings[LIMITE_BACTERIAS][COMPR_BACTE
     for (int i = 0; i <= x; i++) {    
         for (int j = 0; j <= y; j++){
               if(memoria[i][j] > 1) {
-                if (memoria[i][j] == 2) strncat(substring, &t1[i-2], 1);
-                strncat(substring, &t1[i-1], 1);
-                if (memoria[i+1][j+1] != memoria[i][j] + 1 || j == y){ //substring em comum acabou 
-                    strcat(substring, "\0");
-                    if (!existsInArray(substring, substrings, *index)) //evitar que a mesma substring se repita
-                        strcpy(substrings[(*index)++], substring);
-                    strcpy(substring, "");
+                int _i = i;
+                int _j = j;
+                //se não colocar isso, ele começa pela segundo caracter (memoria[i][j] > 1)
+                strncat(substring, &t1[_i - 2], 1);
+                memoria[_i-1][_j-2] = 0;
+                while (1) {            
+                    strncat(substring, &t1[_i - 1], 1);
+                    int aux = memoria[_i][_j];
+                    memoria[_i][_j] = 0;
+                    _i++;
+                    _j++;
+                    if (memoria[_i][_j] != 1 + aux || _j == y){
+                        strcat(substring, "\0");
+                        break;
+                    }
                 }
+                if (!existsInArray(substring, substrings, *index)) //evitar que a mesma substring se repita
+                    strcpy(substrings[(*index)++], substring);
+                strcpy(substring, "");
             }
         }
     }
-    
     return change;
 }
 
@@ -187,14 +187,13 @@ int main(int argc, char *argv[])
                     findCommon(BACTERIAS_INFECTADAS[i], BACTERIAS_INFECTADAS[j], SUBSTRINGS, &SUBSIZE);
 
             // loopa o vetor de BACTERIAS e compara com o das substrings
-            if (nBacterias > 2)
-                for (int i = 0; i < nBacterias; i++)
-                    for (int j = 0; j < SUBSIZE; j++)
-                    {
-                        int c = findCommon(BACTERIAS_INFECTADAS[i], SUBSTRINGS[j], SUBSTRINGS, &SUBSIZE);
-                        if (c <= 1 || c != strlen(SUBSTRINGS[j])) // se houver uma letra ou zero ou se a substring se dividiu em mais SUBSTRINGS, zera o valor
-                            strcpy(SUBSTRINGS[j], "");
-                    }
+            // seria possivel usar um 'if (nBacterias > 2)', já que não há razões para comparar, a fim de salvar esforço computacional, mas a diferença seria mínima
+            for (int i = 0; i < nBacterias; i++)
+                for (int j = 0; j < SUBSIZE; j++){
+                    int c = findCommon(BACTERIAS_INFECTADAS[i], SUBSTRINGS[j], SUBSTRINGS, &SUBSIZE);
+                    if (c <= 1 || c != strlen(SUBSTRINGS[j])) // se houver uma letra ou zero ou se a substring se dividiu em mais SUBSTRINGS, zera o valor
+                        strcpy(SUBSTRINGS[j], "\0");
+                }
 
             //cria um array com os DNAS (substrings) de maior tamanho
             int len = getBiggestLength(SUBSTRINGS, SUBSIZE);
