@@ -117,12 +117,10 @@ int findCommon(char* t1, char* t2, char substrings[LIMITE_BACTERIAS][COMPR_BACTE
     char substring[COMPR_BACTERIAS] = "";
     for (int i = 0; i <= x; i++) {    
         for (int j = 0; j <= y; j++){
-              if(memoria[i][j] > 1) {
+              if(memoria[i][j] >= 1) {
                 int _i = i;
                 int _j = j;
                 //se não colocar isso, ele começa pela segundo caracter (memoria[i][j] > 1)
-                strncat(substring, &t1[_i - 2], 1);
-                memoria[_i-1][_j-2] = 0;
                 while (1) {            
                     strncat(substring, &t1[_i - 1], 1);
                     int aux = memoria[_i][_j];
@@ -191,7 +189,7 @@ int main(int argc, char *argv[])
             for (int i = 0; i < nBacterias; i++)
                 for (int j = 0; j < SUBSIZE; j++){
                     int c = findCommon(BACTERIAS_INFECTADAS[i], SUBSTRINGS[j], SUBSTRINGS, &SUBSIZE);
-                    if (c <= 1 || c != strlen(SUBSTRINGS[j])) // se houver uma letra ou zero ou se a substring se dividiu em mais SUBSTRINGS, zera o valor
+                    if (c < 1 || c != strlen(SUBSTRINGS[j])) // se houver uma letra ou zero ou se a substring se dividiu em mais SUBSTRINGS, zera o valor
                         strcpy(SUBSTRINGS[j], "\0");
                 }
 
