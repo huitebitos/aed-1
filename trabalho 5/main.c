@@ -49,7 +49,8 @@
 
 //Objetivo: em um array de tamanho 'len', retornar o tamanho do maior elemento.
 //Parâmetros: um array 'arr' e o tamanho 'len' do array.
-int getBiggestLength(char arr[LIMITE_BACTERIAS][COMPR_BACTERIAS], int len) {
+int getBiggestLength(char arr[LIMITE_BACTERIAS][COMPR_BACTERIAS], int len) 
+{
     int length = 0; //inicializa com um valor pequeno
     for (int i = 0; i < len; i++)
         length = strlen(arr[i]) > length ? strlen(arr[i]) : length;
@@ -64,7 +65,8 @@ Objetivo: Dado um array de caracteres 'texto', remover a parte 'remover' do text
 Parâmetros: array de caracteres 'dest' e 'texto' para o destino e o texto, respectivamente
             array de caracteres 'remover', que se refere a parte de deverá ser removida.
 */
-void separar(char *dest, char *texto, char *remover) {
+void separar(char *dest, char *texto, char *remover) 
+{
     char *rem = strstr(texto, remover); //parte a ser removida
     char *finish = rem + strlen(remover); 
     char start[50];
@@ -81,10 +83,9 @@ void separar(char *dest, char *texto, char *remover) {
 //Objetivo: ver se existe uma string 'texto' em um array 'array'.
 //Parâmetros: uma string 'texto', um array 'array' e o tamanho 'arraySize' do array. 
 int existsInArray(char *texto, char array[LIMITE_BACTERIAS][COMPR_BACTERIAS], int arraySize) {
-    for (int i = 0; i < arraySize; i++) {
+    for (int i = 0; i < arraySize; i++) 
         if (!strcmp(texto, array[i])) //são iguais
             return 1;
-    }
     return 0; //não existe
 }
 
@@ -102,11 +103,14 @@ int findCommon(char* t1, char* t2, char substrings[LIMITE_BACTERIAS][COMPR_BACTE
     int memoria[x+1][y+1];
     int change = 0; //quantidade de letras modificadas
 
-    for (int i = 0; i <= x; i++) {    //é menor igual porque o tamanho é x+1 e y+1.
-        for (int j = 0; j <= y; j++){
+    for (int i = 0; i <= x; i++) //é menor igual porque o tamanho é x+1 e y+1.
+    {    
+        for (int j = 0; j <= y; j++)
+        {
             if (i == 0 || j == 0)
                 memoria[i][j] = 0;
-            else if (t1[i-1] == t2[j-1]) {//o -1 é necessário pois o index 0 precisa ser incluso
+            else if (t1[i-1] == t2[j-1])//o -1 é necessário pois o index 0 precisa ser incluso
+            {
                 memoria[i][j] = 1 + memoria[i-1][j-1];
                 change = memoria[i][j] > change ? memoria[i][j] : change;
             }
@@ -115,19 +119,24 @@ int findCommon(char* t1, char* t2, char substrings[LIMITE_BACTERIAS][COMPR_BACTE
     }
     
     char substring[COMPR_BACTERIAS] = "";
-    for (int i = 0; i <= x; i++) {    
-        for (int j = 0; j <= y; j++){
-              if(memoria[i][j] >= 1) {
+    for (int i = 0; i <= x; i++) 
+    {    
+        for (int j = 0; j <= y; j++)
+        {
+            if(memoria[i][j] >= 1) 
+            {
                 int _i = i;
                 int _j = j;
                 //se não colocar isso, ele começa pela segundo caracter (memoria[i][j] > 1)
-                while (1) {            
+                while (1) 
+                {            
                     strncat(substring, &t1[_i - 1], 1);
                     int aux = memoria[_i][_j];
                     memoria[_i][_j] = 0;
                     _i++;
                     _j++;
-                    if (memoria[_i][_j] != 1 + aux || _j == y){
+                    if (memoria[_i][_j] != 1 + aux || _j == y)
+                    {
                         strcat(substring, "\0");
                         break;
                     }
@@ -141,6 +150,7 @@ int findCommon(char* t1, char* t2, char substrings[LIMITE_BACTERIAS][COMPR_BACTE
     return change;
 }
 
+//Rotina principal
 int main(int argc, char *argv[])
 {
     int nBacterias;
@@ -187,7 +197,8 @@ int main(int argc, char *argv[])
             // loopa o vetor de BACTERIAS e compara com o das substrings
             // seria possivel usar um 'if (nBacterias > 2)', já que não há razões para comparar, a fim de salvar esforço computacional, mas a diferença seria mínima
             for (int i = 0; i < nBacterias; i++)
-                for (int j = 0; j < SUBSIZE; j++){
+                for (int j = 0; j < SUBSIZE; j++)
+                {
                     int c = findCommon(BACTERIAS_INFECTADAS[i], SUBSTRINGS[j], SUBSTRINGS, &SUBSIZE);
                     if (c < 1 || c != strlen(SUBSTRINGS[j])) // se houver uma letra ou zero ou se a substring se dividiu em mais SUBSTRINGS, zera o valor
                         strcpy(SUBSTRINGS[j], "\0");
@@ -209,6 +220,8 @@ int main(int argc, char *argv[])
                 printf(SAIDA_5, BACTERIAS_INFECTADAS[i]);
             for (int i = 0; i < DNA_SIZE; i++)
                 printf(SAIDA_6, DNAS[i]);
+            if (nBacterias == 1) //caso só houver UMA bactéria, a substring em comum é ela mesma.
+                printf(SAIDA_6, BACTERIAS_INFECTADAS[0]);
 
         }
     }
